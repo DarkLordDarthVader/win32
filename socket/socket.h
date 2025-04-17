@@ -14,21 +14,21 @@ namespace win32 {
         socket(LPCWSTR strHost, LPCWSTR strPort) {
             WSADATA wsaData;
             int err = WSAStartup(
-                MAKEWORD(2, 2), 
+                MAKEWORD(2, 2),
                 &wsaData
             );
             ADDRINFOW hints;
             ZeroMemory(
-                &hints, 
+                &hints,
                 sizeof(hints)
             );
             hints.ai_family = AF_INET;
             hints.ai_socktype = SOCK_STREAM;
             hints.ai_protocol = IPPROTO_TCP;
             err = GetAddrInfoW(
-                strHost, 
-                strPort, 
-                &hints, 
+                strHost,
+                strPort,
+                &hints,
                 &this->paiw
             );
         };
@@ -38,8 +38,8 @@ namespace win32 {
         };
         void open() {
             this->sock = ::socket(
-                this->paiw->ai_family, 
-                this->paiw->ai_socktype, 
+                this->paiw->ai_family,
+                this->paiw->ai_socktype,
                 this->paiw->ai_protocol
             );
         }
@@ -49,9 +49,25 @@ namespace win32 {
         }
         int connect() {
             return ::connect(
-                this->sock, 
-                this->paiw->ai_addr, 
+                this->sock,
+                this->paiw->ai_addr,
                 (int)this->paiw->ai_addrlen
+            );
+        }
+        int send(const char* buf, int len) {
+            return ::send(
+                this->sock, 
+                buf, 
+                len, 
+                0
+            );
+        }
+        int recv(char* buf, int len) {
+            return ::recv(
+                this->sock, 
+                buf, 
+                len, 
+                0
             );
         }
     private:
